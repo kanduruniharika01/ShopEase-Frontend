@@ -1,0 +1,105 @@
+<header>
+    <nav class="navbar">
+        <div class="logo">
+            <a href="/">
+                <img src="logo.png" alt="ShopEase Logo" class="logo-img">
+                <span class="logo-text">
+                    <h2>ShopEase</h2>
+                </span>
+            </a>
+            <!-- <h2>ShopEase</h2> -->
+        </div>
+        <div class="auth-buttons" *ngIf="!token">
+            <a href="login" class="login-btn">Login</a>
+            <a href="register" class="register-btn">Register</a>
+        </div>
+        <div *ngIf="token">
+            <div class="sidebar-profile-icon" (click)="loadProfile()">
+                <span class="profile-avatar">🛍️</span>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<main>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Welcome to ShopEase</h1>
+            <p>Your one-stop destination for amazing deals</p>
+            <a href="#prod"><button class="explore-btn">Start Shopping</button></a>
+        </div>
+    </section>
+
+    <!-- Featured Products -->
+    <section class="products" id="prod">
+        <h2 class="section-title">Featured Products</h2>
+        <div class="product-grid">
+            <div class="product-card">
+                <div class="card-image smartphone"></div>
+                <div class="card-overlay">
+                    <div class="card-content">
+                        <h3>Smartphone X</h3>
+                        <p>Latest technology at your fingertips</p>
+                        <span class="price">₹29,999</span>
+                        <!-- <button class="buy-btn">Add to Cart</button> -->
+                    </div>
+                </div>
+            </div>
+            <div class="product-card">
+                <div class="card-image laptop"></div>
+                <div class="card-overlay">
+                    <div class="card-content">
+                        <h3>Ultra Laptop</h3>
+                        <p>Powerful performance for work & play</p>
+                        <span class="price">₹59,999</span>
+                        <!-- <button class="buy-btn">Add to Cart</button> -->
+                    </div>
+                </div>
+            </div>
+            <div class="product-card">
+                <div class="card-image headphones"></div>
+                <div class="card-overlay">
+                    <div class="card-content">
+                        <h3>Wireless Headphones</h3>
+                        <p>Immersive sound experience</p>
+                        <span class="price">₹4,999</span>
+                        <!-- <button class="buy-btn">Add to Cart</button> -->
+                    </div>
+                </div>
+            </div>
+            <div class="product-card">
+                <div class="card-image sneakers"></div>
+                <div class="card-overlay">
+                    <div class="card-content">
+                        <h3>Sport Sneakers</h3>
+                        <p>Comfort meets style</p>
+                        <span class="price">₹2,499</span>
+                        <!-- <button class="buy-btn">Add to Cart</button> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="features">
+        <div class="feature-card">
+            <div class="feature-icon">🚚</div>
+            <h3>Fast Delivery</h3>
+            <p>Get your products delivered quickly</p>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon">💳</div>
+            <h3>Secure Payments</h3>
+            <p>Safe and easy checkout process</p>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon">📞</div>
+            <h3>24/7 Support</h3>
+            <p>We’re here whenever you need us</p>
+        </div>
+    </section>
+</main>

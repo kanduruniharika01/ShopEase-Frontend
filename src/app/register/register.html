@@ -1,0 +1,90 @@
+<div class="register-container">
+    <div class="register-box">
+        <div class="logo">
+            <h2>ShopEase</h2>
+            <p>Create Your Account to Start Shopping!</p>
+        </div>
+
+        <form class="register-form" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+            <!-- Full Name -->
+            <div class="input-group">
+                <input id="fullname" formControlName="fullname" type="text" class="form-control" />
+                <small *ngIf="registerForm.get('fullname')?.invalid && registerForm.get('fullname')?.touched">
+                    Full name is required.
+                </small>
+                <label for="fullname">Full Name</label>
+                <span class="input-icon">👤</span>
+            </div>
+
+            <!-- Email -->
+            <div class="input-group">
+                <input id="email" formControlName="email" type="email" class="form-control" />
+                <small *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched">
+                    Valid email is required.
+                </small>
+                <label for="email">Email Address</label>
+                <span class="input-icon">📧</span>
+            </div>
+
+            <!-- Phone Number -->
+            <div class="input-group">
+                <input id="phone" formControlName="phone" type="tel" class="form-control" />
+                <small *ngIf="registerForm.get('phone')?.invalid && registerForm.get('phone')?.touched">
+                    Phone number is required.
+                </small>
+                <label for="phone">Phone Number</label>
+                <span class="input-icon">📱</span>
+            </div>
+
+            <!-- Password -->
+            <div class="input-group">
+                <input id="password" formControlName="password" type="password" class="form-control" />
+                <small *ngIf="registerForm.errors?.['mismatch'] && registerForm.get('confirmPassword')?.touched">
+                    Passwords do not match.
+                </small>
+                <label for="password">Password</label>
+                <span class="input-icon">🔒</span>
+            </div>
+
+            <!-- Confirm Password -->
+            <div class="input-group">
+                <input id="confirmPassword" formControlName="confirmPassword" type="password" class="form-control" />
+                <small
+                    *ngIf="registerForm.get('confirmPassword')?.invalid && registerForm.get('confirmPassword')?.touched">
+                    Confirm Password is required.
+                </small>
+                <label for="confirmPassword">Confirm Password</label>
+                <span class="input-icon">🔐</span>
+            </div>
+
+            <!-- Terms & Conditions -->
+            <div class="form-options">
+                <label class="terms-check">
+                    <input type="checkbox" required>
+                    <span class="checkmark"></span>
+                    I agree to Terms & Conditions
+                </label>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="register-btn" [disabled]="registerForm.invalid">Register</button>
+
+            <!-- Login Link -->
+            <div class="login-link">
+                <p>Already have an account? <a href="login">Login</a></p>
+            </div>
+        </form>
+
+        <!-- Back to Home -->
+        <div class="back-home">
+            <a href="home" class="home-link">← Back to Home</a>
+        </div>
+    </div>
+
+    <!-- Decorative Background Shapes -->
+    <div class="background-shapes">
+        <div class="shape shape1"></div>
+        <div class="shape shape2"></div>
+        <div class="shape shape3"></div>
+    </div>
+</div>

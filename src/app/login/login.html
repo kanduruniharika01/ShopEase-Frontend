@@ -1,0 +1,59 @@
+<div class="login-container">
+    <div class="login-box">
+        <div class="logo">
+            <h2>ShopEase</h2>
+            <p>Welcome Back, Happy Shopping!</p>
+        </div>
+
+        <form class="login-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+            <!-- Email -->
+            <div class="input-group">
+                <input id="email" formControlName="email" type="email" class="form-control" />
+                <small *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
+                    Valid email is required.
+                </small>
+                <label for="email">Email Address</label>
+                <span class="input-icon">📧</span>
+            </div>
+
+            <!-- Password -->
+            <div class="input-group">
+                <input id="password" formControlName="password" type="password" class="form-control" />
+                <small *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+                    Password is required.
+                </small>
+                <label for="password">Password</label>
+                <span class="input-icon">🔒</span>
+            </div>
+
+            <!-- Remember Me -->
+            <div class="form-options">
+                <label class="remember-me">
+                    <input type="checkbox">
+                    <span class="checkmark"></span>
+                    Remember me
+                </label>
+            </div>
+
+            <!-- Login Button -->
+            <button type="submit" class="login-btn" [disabled]="loginForm.invalid">Login</button>
+
+            <!-- Signup Link -->
+            <div class="signup-link">
+                <p>Don't have an account? <a href="register">Register</a></p>
+            </div>
+        </form>
+
+        <!-- Back to Home -->
+        <div class="back-home">
+            <a href="home" class="home-link">← Back to Home</a>
+        </div>
+    </div>
+
+    <!-- Decorative Background Shapes -->
+    <div class="background-shapes">
+        <div class="shape shape1"></div>
+        <div class="shape shape2"></div>
+        <div class="shape shape3"></div>
+    </div>
+</div>

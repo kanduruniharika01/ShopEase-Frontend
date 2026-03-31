@@ -1,0 +1,361 @@
+<body>
+    <div class="dashboard-container">
+        <!-- Top Navbar -->
+        <header class="top-navbar">
+            <div class="logo">
+                <h2>ShopEase</h2>
+            </div>
+            <ul class="nav-menu">
+                <li (click)="selectOption('home')" [class.active]="selectedOptions === 'home'">🏠 Home</li>
+                <li (click)="selectOption('products')" [class.active]="selectedOptions === 'products'">🛍️ Products</li>
+
+                <li (click)="selectOption('orders')" [class.active]="selectedOptions === 'orders'">📦 Orders</li>
+                <div class="search-container">
+                    <input type="text" placeholder="Search products..." [(ngModel)]="searchTerm"
+                        (keyup.enter)="searchProducts()">
+                    <button (click)="searchProducts()">🔍</button>
+                </div>
+                <li (click)="selectOption('wishlist')" [class.active]="selectedOptions === 'wishlist'">❤️ </li>
+                <li (click)="selectOption('cart')" [class.active]="selectedOptions === 'cart'">🛒 Cart</li>
+                <li (click)="selectOption('profile')" [class.active]="selectedOptions === 'profile'">👤 Profile</li>
+                <li (click)="logout()" class="logout-btn">🚪 Logout</li>
+            </ul>
+
+        </header>
+
+        <!-- Banner -->
+        <section class="banner">
+            <h1>Spring Sale</h1>
+            <p>Up to 50% off on selected items</p>
+            <button (click)="selectOption('deals')">Shop Now</button>
+        </section>
+
+        <!-- Category Filters -->
+        <!-- <section class="categories">
+            <button (click)="filterCategory('all')">All</button>
+            <button (click)="filterCategory('electronics')">Electronics</button>
+            <button (click)="filterCategory('footwear')">Footwear</button>
+            <button (click)="filterCategory('accessories')">Accessories</button>
+            <button (click)="filterCategory('home')">Home</button>
+            <button (click)="openFilter()">⚙️ Filter</button>
+            <button (click)="sortProducts('featured')">Featured</button>
+        </section> -->
+        <!-- <section class="categories" *ngIf="selectedOptions === 'products'">
+            <button (click)="filterCategory('all')">All</button>
+            <button (click)="filterCategory('electronics')">Electronics</button>
+            <button (click)="filterCategory('footwear')">Footwear</button>
+            <button (click)="filterCategory('accessories')">Accessories</button>
+            <button (click)="filterCategory('home')">Home</button>
+            <button (click)="openFilter()">⚙️ Filter</button>
+            <button (click)="sortProducts('featured')">Featured</button>
+        </section> -->
+        <!-- Category Filters -->
+        <section class="categories" *ngIf="selectedOptions === 'products'">
+
+            <button [class.active]="selectedCategoryId === 'all'" (click)="filterCategory('all')">
+                All
+            </button>
+
+            <button *ngFor="let category of categories" [class.active]="selectedCategoryId === category.categoryId"
+                (click)="filterCategory(category.categoryId)">
+                {{ category.categoryName }}
+            </button>
+
+        </section>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <ng-container [ngSwitch]="selectedOptions">
+
+                <!-- Products -->
+                <!-- <div *ngSwitchCase="'products'" class="products-grid">
+                    <div class="product-card" *ngFor="let product of products">
+                        <div class="product-image">
+                            <img src="{{product.imageUrl}}" alt="{{product.title}}">
+                            <span class="badge" *ngIf="product.isSale">Sale</span>
+                            <span class="badge new" *ngIf="product.isNew">New</span>
+
+                        </div>
+                        <div class="product-content">
+                            <h3>{{product.productName}}</h3>
+                            <button class="wishlist-btn" (click)="addToWishlist(product.productId)">
+                                ❤️
+                            </button>
+                            <p>{{product.productDescription}}</p>
+
+                            <div class="product-rating">
+                                <span class="stars">⭐⭐⭐⭐</span>
+                                <span class="rating-text">4.8 (245 reviews)</span>
+                            </div>
+
+                            <div class="product-footer">
+                                <div class="product-price">
+                                    <span class="price">₹{{product.price}}</span>
+                                    <span class="per-each"> per each </span>
+                                </div>
+                                <button (click)="addToCart(product.productId)">Add to Cart</button>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div> -->
+                <!-- Products -->
+                <div *ngSwitchCase="'products'" class="products-grid">
+                    <div class="product-card" *ngFor="let product of filteredProducts">
+                        <div class="product-image">
+                            <img [src]="product.imageUrl" [alt]="product.productName">
+                            <span class="badge" *ngIf="product.isSale">Sale</span>
+                            <span class="badge new" *ngIf="product.isNew">New</span>
+                        </div>
+
+                        <div class="product-content">
+                            <div class="product-header">
+                                <h3>{{product.productName}}</h3>
+                                <!-- ❤️ Heart icon beside product name -->
+                                <!-- <button class="wishlist-btn" (click)="addToWishlist(product.productId)">
+                                    ❤️
+                                </button> -->
+                                <button class="wishlist-btn" [class.active]="isWishlisted(product.productId)"
+                                    (click)="toggleWishlist(product.productId)">
+                                    &#9829;
+                                </button>
+                            </div>
+
+                            <p>{{product.productDescription}}</p>
+
+                            <div class="product-rating">
+                                <span class="stars">⭐⭐⭐⭐</span>
+                                <span class="rating-text">4.8 (245 reviews)</span>
+                            </div>
+
+                            <div class="product-footer">
+                                <div class="product-price">
+                                    <span class="price">₹{{product.price}}</span>
+                                    <span class="per-each"> per each </span>
+                                </div>
+                                <button class="btn-secondary" (click)="addToCart(product.productId)">Add to
+                                    Cart</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Cart -->
+                <div *ngSwitchCase="'cart'" class="cart-list">
+                    <h2>My Cart</h2>
+                    <div *ngIf="cart.length === 0">Your cart is empty.</div>
+                    <div class="cart-item" *ngFor="let item of cart">
+                        <img [src]="item.imageUrl || 'assets/placeholder.png'"
+                            [alt]="item.productName || 'Product image'" class="cart-image">
+
+                        <div class="cart-details">
+                            <h3>{{ item.productName }}</h3>
+                            <p>₹{{ item.price }} x {{ item.quantity }}</p>
+                            <p><strong>Subtotal:</strong> ₹{{ item.price * item.quantity }}</p>
+                            <button (click)="removeFromCart(item.cartItemId)">Remove</button>
+                        </div>
+                    </div>
+                    <div class="cart-summary" *ngIf="cart.length > 0">
+                        <p><strong>Total:</strong> ₹{{cartTotal}}</p>
+                        <button (click)="selectOption('checkout')">Proceed to Checkout</button>
+                    </div>
+                </div>
+
+                <!-- Checkout -->
+                <div *ngSwitchCase="'checkout'" class="checkout-page">
+                    <h2>Checkout</h2>
+                    <form [formGroup]="checkoutForm" (ngSubmit)="placeOrder()">
+                        <h3>Shipping Address</h3>
+                        <input formControlName="name" placeholder="Full Name">
+                        <input formControlName="email" placeholder="Email">
+                        <input formControlName="phone" placeholder="Phone">
+                        <textarea formControlName="address" placeholder="Address"></textarea>
+                        <input formControlName="city" placeholder="City">
+                        <input formControlName="postalCode" placeholder="Postal Code">
+
+                        <h3>Payment Method</h3>
+                        <label><input type="radio" formControlName="payment" value="card"> Card</label>
+                        <label><input type="radio" formControlName="payment" value="upi"> UPI</label>
+                        <label><input type="radio" formControlName="payment" value="cod"> Cash on Delivery</label>
+
+                        <h3>Order Summary</h3>
+                        <div *ngFor="let item of cart">
+                            <p>{{item.productName}} (x{{item.quantity}}) — ₹{{item.price * item.quantity}}</p>
+                        </div>
+                        <p><strong>Total:</strong> ₹{{cartTotal}}</p>
+
+                        <button type="submit" [disabled]="checkoutForm.invalid">Place Order</button>
+                    </form>
+                </div>
+
+                <!-- Confirmation -->
+                <div *ngSwitchCase="'confirmation'" class="confirmation-page">
+                    <h2>✅ Thank You!</h2>
+                    <p>Your order has been placed successfully.</p>
+                    <p><strong>Order ID:</strong> {{orderConfirmation.id}}</p>
+                    <p><strong>Total:</strong> ₹{{orderConfirmation.total}}</p>
+                    <p><strong>Delivery:</strong> {{orderConfirmation.deliveryDate | date:'mediumDate'}}</p>
+                    <button (click)="selectOption('orders')">View My Orders</button>
+                    <button (click)="selectOption('products')">Continue Shopping</button>
+                </div>
+
+                <!-- Orders -->
+                <div *ngSwitchCase="'orders'" class="orders-list">
+                    <div *ngIf="orders.length === 0">No orders yet.</div>
+                    <div class="order-card" *ngFor="let order of orders">
+                        <h3>{{order.productName}}</h3>
+                        <p>Order ID: {{order.orderId}}</p>
+                        <p>Status: {{order.status}}</p>
+                        <p>Total: ₹{{order.totalPrice}}</p>
+                        <!-- <button (click)="trackOrder(order.orderId)">Track Order</button> -->
+                        <button (click)="viewOrderDetails(order.orderId)">
+                            View Order Details
+                        </button>
+                    </div>
+                </div>
+                <!-- ORDER DETAILS -->
+                <div *ngSwitchCase="'orderDetails'" class="order-details-page">
+
+                    <h2>Order Details</h2>
+
+                    <p><strong>Order ID:</strong> {{ selectedOrderDetails.orderId }}</p>
+                    <p><strong>Status:</strong> {{ selectedOrderDetails.status }}</p>
+                    <p><strong>Total:</strong> ₹{{ selectedOrderDetails.totalPrice }}</p>
+                    <p><strong>Date:</strong>
+                        {{ selectedOrderDetails.orderDate | date:'medium' }}
+                    </p>
+
+                    <h3>Items</h3>
+
+                    <!-- <div class="product-card" *ngFor="let item of selectedOrderDetails.items">
+
+                        <div class="product-image">
+                            <img [src]="item.imageUrl" [alt]="item.productName">
+                        </div>
+
+                        <div class="product-content">
+                            <h4>{{ item.productName }}</h4>
+                            <p>Quantity: {{ item.quantity }}</p>
+                            <p>Price: ₹{{ item.unitPrice }}</p>
+                            <p><strong>Subtotal:</strong> ₹{{ item.subtotal }}</p>
+                        </div>
+                    </div> -->
+                    <div class="order-item-card" *ngFor="let item of selectedOrderDetails.items">
+
+                        <div class="order-item-image">
+                            <img [src]="item.imageUrl" [alt]="item.productName">
+                        </div>
+
+                        <div class="order-item-info">
+                            <h4>{{ item.productName }}</h4>
+                            <p>Quantity: {{ item.quantity }}</p>
+                            <p>Price: ₹{{ item.unitPrice }}</p>
+                            <p><strong>Subtotal:</strong> ₹{{ item.subtotal }}</p>
+                        </div>
+
+                    </div>
+
+                    <button (click)="selectOption('orders')">
+                        Back to Orders
+                    </button>
+
+                </div>
+
+                <!-- Wishlist -->
+                <!-- Wishlist -->
+                <!-- <div *ngSwitchCase="'wishlist'" class="wishlist-list">
+
+                    <h2>My Wishlist</h2>
+
+                    <div *ngIf="wishlist.length === 0">
+                        No items in wishlist.
+                    </div>
+
+                    <div class="wishlist-card" *ngFor="let item of wishlist">
+
+                        <img [src]="item.imageUrl || 'assets/placeholder.png'" [alt]="item.productName"
+                            class="wishlist-image">
+
+                        <h3>{{ item.productName }}</h3>
+
+                        <p>{{ item.description }}</p>
+
+                        <p><strong>₹{{ item.unitPrice }}</strong></p>
+
+
+                        <button (click)="moveToCart(item.wishlistItemId)">
+                            Move to Cart
+                        </button>
+
+
+                        <button (click)="removeFromWishlist(item.wishlistItemId)">Remove</button>
+
+
+                    </div>
+                </div> -->
+
+                <!-- Wishlist -->
+                <div *ngSwitchCase="'wishlist'" class="products-grid">
+
+                    <h2 class="section-title">My Wishlist</h2>
+
+                    <div *ngIf="wishlist.length === 0">
+                        No items in wishlist.
+                    </div>
+
+                    <div class="product-card" *ngFor="let item of wishlist">
+
+                        <div class="product-image">
+                            <img [src]="item.imageUrl || 'assets/placeholder.png'" [alt]="item.productName">
+                        </div>
+
+                        <div class="product-content">
+
+                            <div class="product-header">
+                                <h3>{{ item.productName }}</h3>
+
+                                <!-- Hot pink heart (already wishlisted) -->
+                                <button class="wishlist-btn active" (click)="removeFromWishlist(item.wishlistItemId)">
+                                    &#9829;
+                                </button>
+                            </div>
+
+                            <p>{{ item.description }}</p>
+
+                            <div class="product-footer">
+                                <div class="product-price">
+                                    <span class="price">₹{{ item.unitPrice }}</span>
+                                    <span class="per-each"> per each </span>
+                                </div>
+
+                                <div class="wishlist-actions">
+                                    <button class="btn-primary" (click)="moveToCart(item.wishlistItemId)">
+                                        Move to Cart
+                                    </button>
+                                    <button class="btn-danger" (click)="removeFromWishlist(item.wishlistItemId)">
+                                        Remove
+                                    </button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profile -->
+                <div *ngSwitchCase="'profile'" class="profile-form">
+                    <form [formGroup]="profileForm" (ngSubmit)="onProfileSubmit()">
+                        <input formControlName="name" placeholder="Name">
+                        <input formControlName="email" placeholder="Email">
+                        <input formControlName="contactnumber" placeholder="Contact">
+                        <input formControlName="address" placeholder="Address">
+                        <button type="submit" [disabled]="profileForm.invalid">Update Profile</button>
+                    </form>
+                </div>
+
+            </ng-container>
+        </main>
+    </div>
+</body>

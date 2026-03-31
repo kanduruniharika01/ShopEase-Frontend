@@ -1,0 +1,128 @@
+<div class="dashboard-container">
+    <nav class="sidebar">
+        <div class="logo">
+            <h2>ShopEase Admin</h2>
+        </div>
+        <ul class="nav-menu">
+            <li (click)="selectOption('assign-role')" class="nav-link active">👥 User Management</li>
+            <li (click)="selectOption('customer')" class="nav-link">👤 Customers</li>
+            <li (click)="selectOption('manager')" class="nav-link">🛒 Managers</li>
+            <li><a href="home" class="nav-link">🏠 Back to Home</a></li>
+            <li (click)="logout()" class="nav-link">🚪 Logout</li>
+        </ul>
+    </nav>
+
+    <main class="main-content">
+        <header class="dashboard-header">
+            <h1 id="page-title">
+                {{
+                selectedOptions === 'assign-role'
+                ? 'User Management'
+                : selectedOptions === 'customer'
+                ? 'Customers'
+                : 'Managers'
+                }}
+            </h1>
+        </header>
+
+        <ng-container [ngSwitch]="selectedOptions">
+            <div class="content-area">
+                <!-- User Management -->
+                <div *ngSwitchCase="'assign-role'" id="users-tab" class="tab-content active">
+                    <div class="stats-cards">
+                        <div class="stat-card">
+                            <h3 id="total-users">{{users.length}}</h3>
+                            <p>Total Users</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3 id="total-customers">{{customers.length}}</h3>
+                            <p>Customers</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3 id="total-managers">{{managers.length}}</h3>
+                            <p>Managers</p>
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+                        <table class="users-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="users-tbody">
+                                <tr *ngFor="let user of users">
+                                    <td>{{user.id}}</td>
+                                    <td>{{user.name}}</td>
+                                    <td>{{user.email}}</td>
+                                    <td>{{user.role}}</td>
+                                    <td>{{user.isActive ? 'Active' : 'Inactive'}}</td>
+                                    <td>
+                                        <button (click)="assignRole(user.id,'Customer')" class="dropdown-btn">Assign
+                                            Customer</button>
+                                        <button (click)="assignRole(user.id,'Manager')" class="dropdown-btn">Assign
+                                            Manager</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Customers -->
+                <div *ngSwitchCase="'customer'" id="customers-tab" class="tab-content active">
+                    <div class="table-container">
+                        <table class="users-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="customers-tbody">
+                                <tr *ngFor="let customer of customers">
+                                    <td>{{customer.id}}</td>
+                                    <td>{{customer.name}}</td>
+                                    <td>{{customer.email}}</td>
+                                    <td>{{customer.isActive ? 'Active' : 'Inactive'}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Managers -->
+                <div *ngSwitchCase="'manager'" id="managers-tab" class="tab-content active">
+                    <div class="table-container">
+                        <table class="users-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="managers-tbody">
+                                <tr *ngFor="let manager of managers">
+                                    <td>{{manager.id}}</td>
+                                    <td>{{manager.name}}</td>
+                                    <td>{{manager.email}}</td>
+                                    <td>{{manager.isActive ? 'Active' : 'Inactive'}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+    </main>
+</div>

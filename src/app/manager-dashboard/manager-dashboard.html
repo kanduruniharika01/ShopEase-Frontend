@@ -1,0 +1,370 @@
+<!-- <div class="dashboard-container">
+
+    SIDEBAR -->
+<nav class="sidebar">
+    <div class="logo">
+        <h2>ShopEase Manager</h2>
+        <br>
+        <div class="sidebar-profile-icon" (click)="selectOption('profile')">
+            <span class="profile-avatar">👤</span>
+        </div>
+    </div>
+
+    <ul class="nav-menu">
+        <li (click)="selectOption('products')" class="nav-link" [class.active]="selectedOptions === 'products'">
+            🛒 Products
+        </li>
+
+        <li (click)="selectOption('create')" class="nav-link" [class.active]="selectedOptions === 'create'">
+            ➕ Add Product
+        </li>
+
+        <li (click)="selectOption('categories')" class="nav-link" [class.active]="selectedOptions === 'categories'">
+            🗂 Categories
+        </li>
+
+        <li (click)="backtohome()" class="nav-link">🏠 Back to Home</li>
+        <li (click)="logout()" class="nav-link">🚪 Logout</li>
+    </ul>
+</nav>
+
+
+
+<!-- MAIN -->
+<main class="main-content">
+
+    <!-- HEADER -->
+    <header class="dashboard-header">
+        <h1 id="page-title">
+            {{
+            selectedOptions === 'products' ? 'Products' :
+            selectedOptions === 'create' ? 'Create Product' :
+            selectedOptions === 'categories' ? 'Manage Categories' :
+            selectedOptions === 'profile' ? 'My Profile' :
+            'Dashboard'
+            }}
+        </h1>
+    </header>
+
+
+
+    <!-- CONTENT -->
+    <ng-container [ngSwitch]="selectedOptions">
+        <div class="content-area">
+
+
+
+            <!-- 🟦 PRODUCT LIST -->
+            <div *ngSwitchCase="'products'" id="products-tab" class="tab-content"
+                [class.active]="selectedOptions === 'products'">
+
+                <div class="stats-cards">
+                    <div class="stat-card">
+                        <h3 id="total-products">{{products.length}}</h3>
+                        <p>Total Products</p>
+                    </div>
+                </div>
+
+                <!-- PRODUCT CARDS (same style as package cards) -->
+                <div class="destination-card" *ngFor="let p of products">
+
+                    <div class="package-image">
+                        <img [src]="p.imageUrl" />
+                        <div class="package-badge">
+                            <span class="duration">Stock: {{p.stockquantity}}</span>
+                        </div>
+                    </div>
+
+                    <div class="card-content">
+                        <h3 class="product-name">{{p.productName}}</h3>
+
+                        <p class="category-id">📂 Category ID: {{p.categoryId}}</p>
+
+                        <p class="product-description">{{p.productDescription}}</p>
+
+                        <div class="product-footer">
+                            <div class="product-price">
+                                <span class="price">₹{{p.price}}</span>
+                                <span class="per-person">per item</span>
+                            </div>
+
+                            <div class="product-actions">
+                                <button class="action-btn edit-btn" (click)="openEditModal(p.productId)">Edit</button>
+                                <button class="action-btn delete-btn"
+                                    (click)="deleteProduct(p.productId)">Delete</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+
+
+
+
+            <!-- 🟩 CREATE PRODUCT -->
+            <div *ngSwitchCase="'create'" id="create-tab" class="tab-content"
+                [class.active]="selectedOptions === 'create'">
+
+                <div class="form-container">
+                    <h2 id="form-heading">Create New Product</h2>
+                    <br>
+
+                    <form id="product-form" [formGroup]="addForm" (ngSubmit)="onSubmit()">
+
+                        <div class="form-group">
+                            <label for="product-name">Product Name</label>
+                            <input formControlName="name" type="text" id="product-name" />
+                            <small *ngIf="addForm.get('productName')?.invalid && addForm.get('productName')?.touched">
+                                Product name is required.
+                            </small>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Category</label>
+                            <select formControlName="categoryId">
+                                <option value="">Select Category</option>
+                                <option *ngFor="let c of categories" [value]="c.categoryId">
+                                    {{c.categoryName}}
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Price</label>
+                            <input formControlName="price" type="number" />
+                        </div>
+
+                        <div class="form-group">
+                            <label>Stock</label>
+                            <input formControlName="stock" type="number" />
+                        </div>
+
+                        <div class="form-group">
+                            <label>Image URL</label>
+                            <input formControlName="imageUrl" />
+                        </div>
+
+                        <div class="form-group">
+                            <label>Description</label>
+                            <textarea formControlName="description"></textarea>
+                        </div>
+
+                        <div class="form-actions">
+
+                            <button class="create-btn" [disabled]="addForm.invalid">Create Product</button>
+                            <button type="button" class="reset-btn" (click)="addForm.reset()">Reset</button>
+                        </div>
+
+                    </form>
+                </div>
+
+            </div>
+
+
+
+
+
+            <!-- 🟧 CATEGORY MANAGEMENT -->
+            <div *ngSwitchCase="'categories'" class="tab-content" [class.active]="selectedOptions === 'categories'">
+
+                <div class="stats-cards">
+                    <div class="stat-card">
+                        <h3>{{categories.length}}</h3>
+                        <p>Total Categories</p>
+                    </div>
+                </div>
+
+                <!-- ADD CATEGORY FORM -->
+                <div class="form-container">
+                    <h2>Add Category</h2>
+                    <br>
+
+                    <form [formGroup]="categoryForm" (ngSubmit)="onAddCategory()">
+
+                        <div class="form-group">
+                            <label>Category Name</label>
+                            <input formControlName="name" />
+                        </div>
+
+                        <div class="form-group">
+                            <label>Description</label>
+                            <textarea formControlName="description"></textarea>
+                        </div>
+
+                        <button class="create-btn" [disabled]="categoryForm.invalid">Add Category</button>
+                    </form>
+                </div>
+
+
+                <!-- CATEGORY LIST -->
+                <div class="destination-card" *ngFor="let c of categories">
+
+                    <div class="card-content">
+                        <h3 class="category-name">{{c.categoryName}}</h3>
+
+                        <p class="category-description">{{c.description}}</p>
+
+                        <div class="category-actions">
+                            <button class="action-btn edit-btn" (click)="openCategoryEditModal(c)">Edit</button>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+
+            <!-- 🟪 PROFILE -->
+            <div *ngSwitchCase="'profile'" id="profile-tab" class="tab-content active"
+                [class.active]="selectedOptions === 'profile'">
+
+                <div class="form-container">
+                    <h2 id="form-heading">My Profile details</h2>
+                    <form id="product-form" [formGroup]="profileForm" (ngSubmit)="onProfileSubmit()">
+                        <div class="form-group">
+                            <label for="profile-name">Name</label>
+                            <input formControlName="name" type="text" id="profile-name">
+                            <small *ngIf="profileForm.get('name')?.invalid && profileForm.get('name')?.touched">
+                                Name is required.
+                            </small>
+                        </div>
+                        <div class="form-group">
+                            <label for="profile-email">Email</label>
+                            <input formControlName="email" type="text" id="profile-email" required>
+                            <small *ngIf="profileForm.get('email')?.invalid && profileForm.get('email')?.touched">
+                                Email is required.
+                            </small>
+                        </div>
+                        <div class="form-group">
+                            <label for="profile-contact">Contact-Number</label>
+                            <input formControlName="phone" type="text" id="profile-contact" required>
+                            <small *ngIf="profileForm.get('phone')?.invalid && profileForm.get('phone')?.touched">
+                                Phone number is required.
+                            </small>
+                        </div>
+                        <div class="form-group">
+                            <label for="profile-age">Age</label>
+                            <input min="1" formControlName="age" type="number" id="profile-age">
+                            <small *ngIf="profileForm.get('age')?.invalid && profileForm.get('age')?.touched">
+                                Age is required.
+                            </small>
+                        </div>
+                        <div class="form-group">
+                            <label for="profile-gender">Gender</label>
+                            <input formControlName="gender" type="text" id="profile-gender">
+                            <small *ngIf="profileForm.get('gender')?.invalid && profileForm.get('gender')?.touched">
+                                Image is required.
+                            </small>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="create-btn" id="update-profile-btn"
+                                [disabled]="profileForm.invalid">Update Profile</button>
+
+
+                        </div>
+                    </form>
+
+                </div>
+                <button class="back" (click)="selectOption('packages')">Back</button>
+            </div>
+
+
+        </div>
+    </ng-container>
+
+</main>
+
+
+
+
+
+<!-- 🟥 EDIT PRODUCT MODAL -->
+<div class="modal-overlay" *ngIf="showEditModal">
+    <div class="modal-content">
+
+        <div class="form-container">
+            <h2>Edit Product</h2>
+
+            <form [formGroup]="editForm" (ngSubmit)="onEditSubmit()">
+
+                <div class="form-group">
+                    <label>Product Name</label>
+                    <input formControlName="name" />
+                </div>
+
+                <div class="form-group">
+                    <label>Category</label>
+                    <select formControlName="categoryId">
+                        <option *ngFor="let c of categories" [value]="c.categoryId">
+                            {{c.categoryName}}
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Price</label>
+                    <input type="number" formControlName="price" />
+                </div>
+
+                <div class="form-group">
+                    <label>Stock</label>
+                    <input type="number" formControlName="stock" />
+                </div>
+
+                <div class="form-group">
+                    <label>Image URL</label>
+                    <input formControlName="imageUrl" />
+                </div>
+
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea rows="4" formControlName="description"></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button class="create-btn" id="update-btn">Update</button>
+                    <button class="reset-btn" type="button" (click)="showEditModal=false">Cancel</button>
+                </div>
+
+            </form>
+        </div>
+
+    </div>
+</div>
+
+
+
+
+<!-- 🟨 CATEGORY EDIT MODAL -->
+<div class="modal-overlay" *ngIf="showCategoryModal">
+    <div class="modal-content">
+
+        <div class="form-container">
+            <h2>Edit Category</h2>
+
+            <form [formGroup]="categoryEditForm" (ngSubmit)="onCategoryUpdate()">
+
+                <div class="form-group">
+                    <label>Category Name</label>
+                    <input formControlName="name" />
+                </div>
+
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea formControlName="description"></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button class="create-btn">Update Category</button>
+                    <button type="button" class="reset-btn" (click)="showCategoryModal=false">Cancel</button>
+                </div>
+
+            </form>
+        </div>
+
+    </div>
+</div>
