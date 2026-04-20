@@ -15,5 +15,12 @@ export const routes: Routes = [
     { path: 'admin-dashboard', loadComponent: () => import('./admin-dashboard/admin-dashboard').then(m => m.AdminDashboard), canActivate: [AuthGuard] },
     { path: 'manager-dashboard', loadComponent: () => import('./manager-dashboard/manager-dashboard').then(m => m.ManagerDashboard), canActivate: [AuthGuard] },
     { path: 'customer-dashboard', loadComponent: () => import('./customer-dashboard/customer-dashboard').then(m => m.CustomerDashboard), canActivate: [AuthGuard] },
+    {
+        path: 'product/:id',
+        loadComponent: () =>
+            import('./product-details/product-details')
+                .then(m => m.ProductDetails),
+        canActivate: [AuthGuard]
+    },
     { path: 'test', loadComponent: () => import('./test/test').then(m => m.Test) }
 ];

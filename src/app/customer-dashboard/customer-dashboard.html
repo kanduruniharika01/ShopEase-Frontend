@@ -24,10 +24,56 @@
         </header>
 
         <!-- Banner -->
-        <section class="banner">
+        <!-- <section class="banner">
             <h1>Spring Sale</h1>
             <p>Up to 50% off on selected items</p>
             <button (click)="selectOption('deals')">Shop Now</button>
+        </section> -->
+        <!-- <section class="banner-carousel">
+
+            <div class="carousel-slide" *ngFor="let slide of banners; let i = index"
+                [class.active]="i === activeBannerIndex">
+                <div class="banner-content">
+                    <h1>{{ slide.title }}</h1>
+                    <p>{{ slide.subtitle }}</p>
+                    <button (click)="selectOption(slide.action)">
+                        {{ slide.buttonText }}
+                    </button>
+                </div>
+            </div>
+
+            Navigation dots 
+            <div class="carousel-dots">
+                <span *ngFor="let slide of banners; let i = index" (click)="setBanner(i)"
+                    [class.active]="i === activeBannerIndex"></span>
+            </div>
+
+        </section> -->
+        <section class="banner-carousel">
+
+            <div class="carousel-slide" *ngFor="let slide of banners; let i = index"
+                [class.active]="i === activeBannerIndex" [style.backgroundImage]="'url(' + slide.image + ')'">
+
+                <!-- Dark overlay -->
+                <!-- <div class="banner-overlay"></div>
+
+                Banner text -->
+                <!-- <div class="banner-content">
+                    <h1>{{ slide.title }}</h1>
+                    <p>{{ slide.subtitle }}</p>
+                    <button (click)="selectOption(slide.action)">
+                        {{ slide.buttonText }}
+                    </button>
+                </div> -->
+
+            </div>
+
+            <!-- Dots -->
+            <div class="carousel-dots">
+                <span *ngFor="let slide of banners; let i = index" (click)="setBanner(i)"
+                    [class.active]="i === activeBannerIndex"></span>
+            </div>
+
         </section>
 
         <!-- Category Filters -->
@@ -62,6 +108,14 @@
             </button>
 
         </section>
+        <div class="sort-container" *ngIf="selectedOptions === 'products'">
+            <select (change)="sortProducts($event.target.value)">
+                <option value="">Sort By</option>
+                <!-- <option value="featured">Featured</option> -->
+                <option value="priceLowHigh">Price: Low to High</option>
+                <option value="priceHighLow">Price: High to Low</option>
+            </select>
+        </div>
 
         <!-- Main Content -->
         <main class="main-content">
@@ -102,7 +156,8 @@
                 </div> -->
                 <!-- Products -->
                 <div *ngSwitchCase="'products'" class="products-grid">
-                    <div class="product-card" *ngFor="let product of filteredProducts">
+                    <div class="product-card" *ngFor="let product of filteredProducts"
+                        (click)="goToProduct(product.productId)">
                         <div class="product-image">
                             <img [src]="product.imageUrl" [alt]="product.productName">
                             <span class="badge" *ngIf="product.isSale">Sale</span>
@@ -126,7 +181,7 @@
 
                             <div class="product-rating">
                                 <span class="stars">⭐⭐⭐⭐</span>
-                                <span class="rating-text">4.8 (245 reviews)</span>
+                                <span class="rating-text">4.8</span>
                             </div>
 
                             <div class="product-footer">
@@ -134,8 +189,15 @@
                                     <span class="price">₹{{product.price}}</span>
                                     <span class="per-each"> per each </span>
                                 </div>
-                                <button class="btn-secondary" (click)="addToCart(product.productId)">Add to
-                                    Cart</button>
+                                <!-- <button class="btn-secondary"
+                                    (click)="addToCart(product.productId); $event.stopPropagation()">Add to
+                                    Cart</button> -->
+
+                                <button class="btn-secondary"
+                                    (click)="addToCart(product.productId); $event.preventDefault(); $event.stopPropagation()">
+                                    Add to Cart
+                                </button>
+
                             </div>
                         </div>
                     </div>
@@ -143,7 +205,7 @@
 
 
                 <!-- Cart -->
-                <div *ngSwitchCase="'cart'" class="cart-list">
+                <!-- <div *ngSwitchCase="'cart'" class="cart-list">
                     <h2>My Cart</h2>
                     <div *ngIf="cart.length === 0">Your cart is empty.</div>
                     <div class="cart-item" *ngFor="let item of cart">
@@ -161,6 +223,92 @@
                         <p><strong>Total:</strong> ₹{{cartTotal}}</p>
                         <button (click)="selectOption('checkout')">Proceed to Checkout</button>
                     </div>
+                </div> -->
+                <div *ngSwitchCase="'cart'" class="products-grid">
+
+                    <h2 class="section-title">My Cart</h2>
+
+                    <div *ngIf="cart.length === 0">
+                        Your cart is empty.
+                    </div>
+
+                    <div class="product-card" *ngFor="let item of cart">
+
+                        <!-- Product Image (same size as wishlist) -->
+                        <div class="product-image">
+                            <img [src]="item.imageUrl || 'assets/placeholder.png'" [alt]="item.productName">
+                        </div>
+
+                        <div class="product-content">
+
+                            <h3>{{ item.productName }}</h3>
+
+                            <!-- ✅ Quantity Controls -->
+                            <div class="quantity-control">
+                                <button (click)="decreaseQty(item)">−</button>
+                                <span>{{ item.quantity }}</span>
+                                <button (click)="increaseQty(item)">+</button>
+                            </div>
+
+                            <!-- ✅ Price Calculation -->
+                            <div class="product-footer">
+                                <div class="product-price">
+                                    <span class="price">
+                                        ₹{{ item.price * item.quantity }}
+                                    </span>
+                                    <span class="per-each">
+                                        (₹{{ item.price }} each)
+                                    </span>
+                                </div>
+
+                                <button class="btn-danger" (click)="removeFromCart(item.cartItemId)">
+                                    Remove
+                                </button>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- ✅ Cart Summary -->
+                    <!-- <div class="cart-summary" *ngIf="cart.length > 0">
+                        <h3>Total: ₹{{ cartTotal }}</h3>
+                        <button class="btn-primary" (click)="selectOption('checkout')">
+                            Proceed to Checkout
+                        </button>
+                    </div> -->
+                    <!-- ✅ Cart Summary Box -->
+                    <div class="cart-summary-box" *ngIf="cart.length > 0">
+
+                        <h3 class="cart-summary-title">Cart Summary</h3>
+
+                        <!-- Items list -->
+                        <div class="cart-summary-items">
+                            <div class="cart-summary-item" *ngFor="let item of cart">
+                                <span class="item-name">
+                                    {{ item.productName }} × {{ item.quantity }}
+                                </span>
+                                <span class="item-price">
+                                    ₹{{ item.price * item.quantity }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <!-- Total -->
+                        <div class="cart-summary-total">
+                            <span>Total</span>
+                            <span>₹{{ cartTotal }}</span>
+                        </div>
+
+                        <!-- Checkout -->
+                        <button class="btn-checkout" (click)="selectOption('checkout')">
+                            Proceed to Checkout
+                        </button>
+
+                    </div>
+
                 </div>
 
                 <!-- Checkout -->
@@ -357,5 +505,61 @@
 
             </ng-container>
         </main>
+    </div>
+    <!-- PRODUCT DETAILS MODAL -->
+    <div class="product-modal" *ngIf="selectedProduct">
+
+        <div class="modal-content">
+
+            <!-- Close -->
+            <span class="close-btn" (click)="closeProductDetails()">×</span>
+
+            <!-- LEFT: IMAGE GALLERY -->
+            <div class="modal-images">
+
+                <!-- <img class="main-image" [src]="selectedProduct.images[activeImageIndex]" alt="Product image"> -->
+                <img *ngIf="selectedProduct.images.length > 0" class="main-image"
+                    [src]="selectedProduct.images[activeImageIndex]" />
+
+                <!-- fallback if no images -->
+                <!-- <img *ngIf="selectedProduct.images.length === 0" class="main-image" src="assets/placeholder.png" /> -->
+                <div *ngIf="selectedProduct.images.length === 0" class="no-image">
+                    No Image Available
+                </div>
+
+                <!-- <div class="thumbnail-row">
+                    <img *ngFor="let img of selectedProduct.images; let i = index" [src]="img"
+                        [class.active]="i === activeImageIndex" (click)="activeImageIndex = i">
+                </div> -->
+                <div class="thumbnail-row" *ngIf="selectedProduct.images.length > 1">
+                    <img *ngFor="let img of selectedProduct.images; let i = index" [src]="img"
+                        [class.active]="i === activeImageIndex" (click)="activeImageIndex = i" />
+                </div>
+
+            </div>
+
+            <!-- RIGHT: PRODUCT INFO -->
+            <div class="modal-info">
+
+                <h2>{{ selectedProduct.productName }}</h2>
+                <p class="price">₹{{ selectedProduct.price }}</p>
+
+                <h4>Key Features</h4>
+                <ul>
+                    <li *ngFor="let feature of selectedProduct.features">
+                        ✔ {{ feature }}
+                    </li>
+                </ul>
+
+                <h4>About this product</h4>
+                <p>{{ selectedProduct.productDescription }}</p>
+
+                <button class="btn-primary" (click)="addToCart(selectedProduct.productId)">
+                    Add to Cart
+                </button>
+
+            </div>
+
+        </div>
     </div>
 </body>

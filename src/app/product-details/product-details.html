@@ -1,0 +1,65 @@
+<div class="page-wrapper">
+    <div class="product-details-page" *ngIf="product">
+
+        <!-- LEFT: IMAGE GALLERY -->
+        <div class="image-section">
+
+            <!-- Main Image (safe) -->
+            <img class="main-image" *ngIf="product.images?.length > 0" [src]="product.images[activeImageIndex]"
+                alt="Product image" />
+
+            <!-- Fallback -->
+            <div *ngIf="!product.images || product.images.length === 0" class="no-image">
+                No Image Available
+            </div>
+
+            <!-- Arrow Controls -->
+            <div class="arrow-controls" *ngIf="product.images?.length > 1">
+                <button (click)="prevImage()" class="arrow-btn">←</button>
+                <button (click)="nextImage()" class="arrow-btn">→</button>
+            </div>
+
+            <!-- Thumbnails -->
+            <div class="thumbnail-row" *ngIf="product.images?.length > 1">
+                <img *ngFor="let img of product.images; let i = index" [src]="img" (click)="activeImageIndex = i"
+                    [class.active]="i === activeImageIndex" alt="Thumbnail" />
+            </div>
+
+        </div>
+
+        <!-- RIGHT: PRODUCT INFO -->
+        <div class="info-section">
+
+            <!-- Product Name -->
+            <h1>{{ product.productName }}</h1>
+
+            <!-- Price -->
+            <p class="price">₹{{ product.price }}</p>
+
+            <!-- ACTION BUTTONS -->
+            <!-- <div class="actions"> -->
+
+            <!-- ✅ Add to Cart (same behavior as dashboard) -->
+            <!-- <button class="btn-primary" (click)="addToCart()">
+                    Add to Cart
+                </button> -->
+
+            <!-- ✅ Wishlist toggle with active heart -->
+            <!-- <button class="btn-secondary wishlist-btn" [class.active]="isWishlisted(product.productId)"
+                    (click)="toggleWishlist()">
+                    &#9829; Wishlist
+                </button>
+
+            </div> -->
+
+            <!-- Description -->
+            <h3>About this product</h3>
+            <ul class="description">
+                <li *ngFor="let point of descriptionPoints">
+                    {{ point }}
+                </li>
+            </ul>
+
+        </div>
+    </div>
+</div>

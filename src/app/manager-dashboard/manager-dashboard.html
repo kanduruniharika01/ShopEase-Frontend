@@ -138,13 +138,121 @@
 
                         <div class="form-group">
                             <label>Stock</label>
-                            <input formControlName="stock" type="number" />
+                            <input formControlName="stockquantity" type="number" />
                         </div>
 
                         <div class="form-group">
                             <label>Image URL</label>
                             <input formControlName="imageUrl" />
                         </div>
+                        <div class="form-group">
+                            <label>Image URL1</label>
+                            <input formControlName="imageUrl1" />
+                        </div>
+                        <div class="form-group">
+                            <label>Image URL2</label>
+                            <input formControlName="imageUrl2" />
+                        </div>
+                        <div class="form-group">
+                            <label>Image URL3</label>
+                            <input formControlName="imageUrl3" />
+                        </div>
+                        <div class="form-group">
+                            <label>Image URL4</label>
+                            <input formControlName="imageUrl4" />
+                        </div>
+                        <div class="form-group">
+                            <label>Image URL5</label>
+                            <input formControlName="imageUrl5" />
+                        </div>
+                        <div class="form-group">
+                            <label>Image URL6</label>
+                            <input formControlName="imageUrl6" />
+                        </div>
+                        <div class="form-group">
+                            <label>Image URL7</label>
+                            <input formControlName="imageUrl7" />
+                        </div>
+                        <!-- ADDITIONAL IMAGES -->
+                        <!-- <div class="form-group">
+                            <label>Additional Images</label>
+
+                            <div *ngFor="let img of imagesFormArray.controls; let i = index" class="inline-input">
+                                <input [formControl]="img" placeholder="Image URL" />
+                                <button type="button" class="small-btn" (click)="removeImageField(i)">❌</button>
+                            </div>
+
+                            <button type="button" (click)="addImage()">Add Image</button>
+                        </div> -->
+                        <!-- <div *ngIf="imagesFormArray">
+                            <div *ngFor="let img of imagesFormArray.controls; let i = index" class="inline-input">
+
+                                <input [formControl]="img" placeholder="Image URL" />
+                                <button type="button" class="small-btn" (click)="removeImageField(i)">❌</button>
+
+                                <button type="button" (click)="addImage()">
+                                    Add Image
+                                </button>
+                            </div>
+                        </div>
+
+                        
+                         <div class="form-group">
+                            <label>Features</label>
+
+                            <div *ngFor="let f of featuresFormArray.controls; let i = index" class="inline-input">
+                                <input [formControl]="f" placeholder="Feature" />
+                                <button type="button" class="small-btn" (click)="removeFeatureField(i)">❌</button>
+                            </div>
+
+                            <button (click)="addFeature()">Add Feature</button>
+                        </div> -->
+
+                        <!-- <div *ngIf="featuresFormArray">
+                            <div *ngFor="let f of featuresFormArray.controls; let i = index" class="inline-input">
+
+                                <input [formControl]="f" placeholder="Feature" />
+                                <button type="button" class="small-btn" (click)="removeFeatureField(i)">❌</button>
+                            </div>
+                        </div> -->
+                        <!-- ADDITIONAL IMAGES -->
+                        <!-- <div class="form-group">
+                            <label>Additional Images</label>
+
+                            <div *ngIf="imagesFormArray">
+                                <div *ngFor="let img of imagesFormArray.controls; let i = index" class="inline-input">
+
+                                    <input [formControl]="img" placeholder="Image URL" />
+                                    <button type="button" class="small-btn" (click)="removeImageField(i)">
+                                        ❌
+                                    </button>
+                                </div>
+                            </div> -->
+
+                        <!-- ✅ BUTTON MUST BE OUTSIDE ngFor -->
+                        <!-- <button type="button" class="add-more-btn" (click)="addImageField()">
+                                ➕ Add Image
+                            </button>
+                        </div> -->
+
+                        <!-- FEATURES -->
+                        <!-- <div class="form-group">
+                            <label>Features</label>
+
+                            <div *ngIf="featuresFormArray">
+                                <div *ngFor="let f of featuresFormArray.controls; let i = index" class="inline-input">
+
+                                    <input [formControl]="f" placeholder="Feature" />
+                                    <button type="button" class="small-btn" (click)="removeFeatureField(i)">
+                                        ❌
+                                    </button>
+                                </div>
+                            </div> -->
+
+                        <!-- <button type="button" class="add-more-btn" (click)="addFeatureField()">
+                                ➕ Add Feature
+                            </button>
+                        </div> -->
 
                         <div class="form-group">
                             <label>Description</label>
@@ -312,13 +420,59 @@
 
                 <div class="form-group">
                     <label>Stock</label>
-                    <input type="number" formControlName="stock" />
+                    <input type="number" formControlName="stockquantity" />
                 </div>
 
                 <div class="form-group">
                     <label>Image URL</label>
                     <input formControlName="imageUrl" />
                 </div>
+                <div class="form-group">
+                    <label>Image URL1</label>
+                    <input formControlName="imageUrl1" />
+                </div>
+                <div class="form-group">
+                    <label>Image URL2</label>
+                    <input formControlName="imageUrl2" />
+                </div>
+                <div class="form-group">
+                    <label>Image URL3</label>
+                    <input formControlName="imageUrl3" />
+                </div>
+                <div class="form-group">
+                    <label>Image URL4</label>
+                    <input formControlName="imageUrl4" />
+                </div>
+                <div class="form-group">
+                    <label>Image URL5</label>
+                    <input formControlName="imageUrl5" />
+                </div>
+                <div class="form-group">
+                    <label>Image URL6</label>
+                    <input formControlName="imageUrl6" />
+                </div>
+                <div class="form-group">
+                    <label>Image URL7</label>
+                    <input formControlName="imageUrl7" />
+                </div>
+                <!-- ADDITIONAL IMAGES (EDIT) -->
+                <!-- <div class="form-group">
+                    <label>Additional Images</label>
+
+                    <div *ngIf="editForm.get('images')">
+                        <div *ngFor="let img of editForm.get('images').controls; let i = index" class="inline-input">
+
+                            <input [formControl]="img" placeholder="Image URL" />
+                            <button type="button" class="small-btn" (click)="removeEditImageField(i)">
+                                ❌
+                            </button>
+                        </div>
+                    </div>
+
+                    <button type="button" class="add-more-btn" (click)="addEditImageField()">
+                        ➕ Add Image
+                    </button>
+                </div> -->
 
                 <div class="form-group">
                     <label>Description</label>

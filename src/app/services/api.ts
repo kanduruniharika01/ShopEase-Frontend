@@ -31,9 +31,11 @@ export class Api {
     delete(url: string) {
         return this.http.delete(this.baseUrl + url);
     }
+
     postText(url: string, body: any) {
         return this.http.post(this.baseUrl + url, body, {
             responseType: 'text'
         });
     }
+
 }

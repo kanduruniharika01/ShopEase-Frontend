@@ -4,11 +4,12 @@ import { Api } from '../services/api';
 import { RouterModule, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';   // ✅ ADD
 
 @Component({
   selector: 'app-manager-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule, ReactiveFormsModule, HttpClientModule],
+  imports: [CommonModule, RouterModule, ReactiveFormsModule, FormsModule, HttpClientModule],
   templateUrl: './manager-dashboard.html',
   styleUrl: './manager-dashboard.css',
 })
@@ -32,6 +33,18 @@ export class ManagerDashboard {
   categoryEditForm: FormGroup;
   showCategoryModal = false;
   selectedCategoryId: number | null = null;
+  // ---------- NEW : MULTIPLE IMAGES & FEATURES ----------
+  imageInput: string = '';
+  featureInput: string = '';
+
+  newProduct = {
+    productName: '',
+    price: 0,
+    productDescription: '',
+    categoryId: 0,
+    images: [] as string[],
+    features: [] as string[]
+  };
 
   constructor(private api: Api, private fb: FormBuilder, private router: Router) {
 
@@ -42,7 +55,16 @@ export class ManagerDashboard {
       price: ['', [Validators.required, Validators.min(1)]],
       stock: ['', [Validators.required, Validators.min(0)]],
       imageUrl: ['', Validators.required],
-      description: ['', Validators.required]
+      imageUrl1: ['', Validators.required],
+      imageUrl2: ['', Validators.required],
+      imageUrl3: ['', Validators.required],
+      imageUrl4: ['', Validators.required],
+      imageUrl5: ['', Validators.required],
+      imageUrl6: ['', Validators.required],
+      imageUrl7: ['', Validators.required],
+      description: ['', Validators.required],
+
+
     });
 
     // PRODUCT EDIT FORM
@@ -53,6 +75,13 @@ export class ManagerDashboard {
       price: ['', Validators.required],
       stock: ['', Validators.required],
       imageUrl: ['', Validators.required],
+      imageUrl1: ['', Validators.required],
+      imageUrl2: ['', Validators.required],
+      imageUrl3: ['', Validators.required],
+      imageUrl4: ['', Validators.required],
+      imageUrl5: ['', Validators.required],
+      imageUrl6: ['', Validators.required],
+      imageUrl7: ['', Validators.required],
       description: ['', Validators.required],
     });
 
@@ -81,6 +110,88 @@ export class ManagerDashboard {
     this.loadCategories();
     this.userId = Number(localStorage.getItem('userId'));
   }
+
+  get imagesFormArray() {
+    return this.addForm?.get('images') as any;
+  }
+
+  get featuresFormArray() {
+    return this.addForm?.get('features') as any;
+  }
+  addImageField() {
+    this.imagesFormArray.push(this.fb.control(''));
+  }
+
+  removeImageField(index: number) {
+    this.imagesFormArray.removeAt(index);
+  }
+
+  addFeatureField() {
+    this.featuresFormArray.push(this.fb.control(''));
+  }
+
+  removeFeatureField(index: number) {
+    this.featuresFormArray.removeAt(index);
+  }
+  addImage() {
+    if (this.imageInput.trim()) {
+      this.newProduct.images.push(this.imageInput.trim());
+      this.imageInput = '';
+    }
+  }
+
+  removeImage(img: string) {
+    this.newProduct.images =
+      this.newProduct.images.filter(i => i !== img);
+  }
+  addFeature() {
+    if (this.featureInput.trim()) {
+      this.newProduct.features.push(this.featureInput.trim());
+      this.featureInput = '';
+    }
+  }
+
+  removeFeature(feature: string) {
+    this.newProduct.features =
+      this.newProduct.features.filter(f => f !== feature);
+  }
+  createProduct() {
+    if (
+      !this.newProduct.productName ||
+      !this.newProduct.price ||
+      !this.newProduct.categoryId
+    ) {
+      alert('Please fill all required fields');
+      return;
+    }
+
+    this.api.post('/manager/products', this.newProduct).subscribe({
+      next: () => {
+        alert('Product created successfully!');
+        this.resetNewProduct();
+        this.loadProducts();
+      },
+      error: (err: any) => {
+        console.error(err);
+        alert(err.error || 'Failed to create product');
+      }
+    });
+  }
+  resetNewProduct() {
+    this.newProduct = {
+      productName: '',
+      price: 0,
+      productDescription: '',
+      categoryId: 0,
+      images: [],
+      features: []
+    };
+
+    this.imageInput = '';
+    this.featureInput = '';
+  }
+
+
 
   // ----------------------------------------------------
   // LOAD PRODUCTS
@@ -135,6 +246,13 @@ export class ManagerDashboard {
       Price: this.addForm.value.price,
       StockQuantity: this.addForm.value.stock,
       ImageUrl: this.addForm.value.imageUrl,
+      ImageUrl1: this.addForm.value.imageUrl1,
+      ImageUrl2: this.addForm.value.imageUrl2,
+      ImageUrl3: this.addForm.value.imageUrl3,
+      ImageUrl4: this.addForm.value.imageUrl4,
+      ImageUrl5: this.addForm.value.imageUrl5,
+      ImageUrl6: this.addForm.value.imageUrl6,
+      ImageUrl7: this.addForm.value.imageUrl7,
       CategoryId: this.addForm.value.categoryId,
       isActive: true
     };
@@ -168,6 +286,13 @@ export class ManagerDashboard {
           price: res.price,
           stock: res.stockquantity,
           imageUrl: res.imageUrl,
+          imageUrl1: res.imageUrl1,
+          imageUrl2: res.imageUrl2,
+          imageUrl3: res.imageUrl3,
+          imageUrl4: res.imageUrl4,
+          imageUrl5: res.imageUrl5,
+          imageUrl6: res.imageUrl6,
+          imageUrl7: res.imageUrl7,
           description: res.productDescription
         });
       },
@@ -189,6 +314,13 @@ export class ManagerDashboard {
         Price: this.editForm.value.price,
         StockQuantity: this.editForm.value.stock,
         ImageUrl: this.editForm.value.imageUrl,
+        ImageUrl1: this.editForm.value.imageUrl1,
+        ImageUrl2: this.editForm.value.imageUrl2,
+        ImageUrl3: this.editForm.value.imageUrl3,
+        ImageUrl4: this.editForm.value.imageUrl4,
+        ImageUrl5: this.editForm.value.imageUrl5,
+        ImageUrl6: this.editForm.value.imageUrl6,
+        ImageUrl7: this.editForm.value.imageUrl7,
         CategoryId: this.editForm.value.categoryId,
         isActive: true
       };
@@ -376,6 +508,13 @@ export class ManagerDashboard {
         Price: this.addForm.value.price,
         StockQuantity: this.addForm.value.stock,
         ImageUrl: this.addForm.value.imageUrl,
+        ImageUrl1: this.addForm.value.imageUrl1,
+        ImageUrl2: this.addForm.value.imageUrl2,
+        ImageUrl3: this.addForm.value.imageUrl3,
+        ImageUrl4: this.addForm.value.imageUrl4,
+        ImageUrl5: this.addForm.value.imageUrl5,
+        ImageUrl6: this.addForm.value.imageUrl6,
+        ImageUrl7: this.addForm.value.imageUrl7,
         CategoryId: this.addForm.value.categoryId,
         isActive: true
       };
@@ -398,5 +537,7 @@ export class ManagerDashboard {
     }
   }
 }
+
+
 
 
